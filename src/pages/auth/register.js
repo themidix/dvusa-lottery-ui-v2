@@ -20,17 +20,17 @@ const Page = () => {
     validationSchema: Yup.object({
       email: Yup
         .string()
-        .email('Must be a valid email')
+        .email('Veuillez saisir une adresse mail valide')
         .max(255)
-        .required('Email is required'),
+        .required('Email est obligatoire'),
       name: Yup
         .string()
         .max(255)
-        .required('Name is required'),
+        .required('Nom est obligatoire'),
       password: Yup
         .string()
         .max(255)
-        .required('Password is required')
+        .required('Mot de passe est obligatoire')
     }),
     onSubmit: async (values, helpers) => {
       try {
@@ -48,7 +48,7 @@ const Page = () => {
     <>
       <Head>
         <title>
-          Register | Devias Kit
+          Inscription | DV LOTTERY
         </title>
       </Head>
       <Box
@@ -73,13 +73,13 @@ const Page = () => {
               sx={{ mb: 3 }}
             >
               <Typography variant="h4">
-                Register
+                Inscription
               </Typography>
               <Typography
                 color="text.secondary"
                 variant="body2"
               >
-                Already have an account?
+                Avez-vous un compte ?
                 &nbsp;
                 <Link
                   component={NextLink}
@@ -87,7 +87,7 @@ const Page = () => {
                   underline="hover"
                   variant="subtitle2"
                 >
-                  Log in
+                  Connectez-vous
                 </Link>
               </Typography>
             </Stack>
@@ -100,7 +100,7 @@ const Page = () => {
                   error={!!(formik.touched.name && formik.errors.name)}
                   fullWidth
                   helperText={formik.touched.name && formik.errors.name}
-                  label="Name"
+                  label="Nom complet"
                   name="name"
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
@@ -110,7 +110,7 @@ const Page = () => {
                   error={!!(formik.touched.email && formik.errors.email)}
                   fullWidth
                   helperText={formik.touched.email && formik.errors.email}
-                  label="Email Address"
+                  label="Votre adresse mail ex: monadresse@mail.com"
                   name="email"
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
@@ -121,7 +121,7 @@ const Page = () => {
                   error={!!(formik.touched.password && formik.errors.password)}
                   fullWidth
                   helperText={formik.touched.password && formik.errors.password}
-                  label="Password"
+                  label="Mot de passe"
                   name="password"
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
