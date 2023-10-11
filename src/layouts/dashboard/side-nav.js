@@ -71,7 +71,7 @@ export const SideNav = (props) => {
                 color="inherit"
                 variant="subtitle1"
               >
-                Devias
+                DV USA LOTTERY
               </Typography>
               <Typography
                 color="neutral.400"
@@ -123,11 +123,12 @@ export const SideNav = (props) => {
             })}
           </Stack>
         </Box>
-        <Divider sx={{ borderColor: 'neutral.700' }} />
+        <Divider sx={{ borderColor: 'neutral.700', visibility: 'hidden' }} />
         <Box
           sx={{
             px: 2,
-            py: 3
+            py: 3,
+            visibility: 'hidden'
           }}
         >
           <Typography

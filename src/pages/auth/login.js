@@ -176,14 +176,14 @@ const Page = () => {
                 >
                   Continue
                 </Button>
-                <Button
+                {/* <Button
                   fullWidth
                   size="large"
                   sx={{ mt: 3 }}
                   onClick={handleSkip}
                 >
                   Skip authentication
-                </Button>
+                </Button> */}
                 <Alert
                   color="primary"
                   severity="info"

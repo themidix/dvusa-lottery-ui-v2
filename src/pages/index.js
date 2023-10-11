@@ -17,7 +17,7 @@ const Page = () => (
   <>
     <Head>
       <title>
-        Overview | Devias Kit
+        DV USA LOTTERY | Dashboard
       </title>
     </Head>
     <Box

@@ -19,7 +19,7 @@ export const items = [
     )
   },
   {
-    title: 'Customers',
+    title: 'Clients',
     path: '/customers',
     icon: (
       <SvgIcon fontSize="small">
@@ -28,7 +28,7 @@ export const items = [
     )
   },
   {
-    title: 'Companies',
+    title: 'Cybercafe',
     path: '/companies',
     icon: (
       <SvgIcon fontSize="small">
@@ -37,7 +37,7 @@ export const items = [
     )
   },
   {
-    title: 'Account',
+    title: 'Compte',
     path: '/account',
     icon: (
       <SvgIcon fontSize="small">
@@ -46,7 +46,7 @@ export const items = [
     )
   },
   {
-    title: 'Settings',
+    title: 'Parametres',
     path: '/settings',
     icon: (
       <SvgIcon fontSize="small">
@@ -55,7 +55,7 @@ export const items = [
     )
   },
   {
-    title: 'Login',
+    title: 'Connexion',
     path: '/auth/login',
     icon: (
       <SvgIcon fontSize="small">
@@ -63,22 +63,22 @@ export const items = [
       </SvgIcon>
     )
   },
-  {
-    title: 'Register',
-    path: '/auth/register',
-    icon: (
-      <SvgIcon fontSize="small">
-        <UserPlusIcon />
-      </SvgIcon>
-    )
-  },
-  {
-    title: 'Error',
-    path: '/404',
-    icon: (
-      <SvgIcon fontSize="small">
-        <XCircleIcon />
-      </SvgIcon>
-    )
-  }
+  // {
+  //   title: 'S\'inscrire',
+  //   path: '/auth/register',
+  //   icon: (
+  //     <SvgIcon fontSize="small">
+  //       <UserPlusIcon />
+  //     </SvgIcon>
+  //   )
+  // },
+  // {
+  //   title: 'Error',
+  //   path: '/404',
+  //   icon: (
+  //     <SvgIcon fontSize="small">
+  //       <XCircleIcon />
+  //     </SvgIcon>
+  //   )
+  // }
 ];
