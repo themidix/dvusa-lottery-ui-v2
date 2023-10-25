@@ -8,6 +8,7 @@ import {
   Alert,
   Box,
   Button,
+  ButtonGroup,
   FormHelperText,
   Link,
   Stack,
@@ -18,15 +19,25 @@ import {
 } from '@mui/material';
 import { useAuth } from 'src/hooks/use-auth';
 import { Layout as AuthLayout } from 'src/layouts/auth/layout';
+import { toast } from 'react-toastify';
+import HashLoader from "react-spinners/HashLoader";
+
+const override = {
+  display: "block",
+  margin: "0 2rem",
+  borderColor: "#ffffff",
+};
 
 const Page = () => {
   const router = useRouter();
   const auth = useAuth();
   const [method, setMethod] = useState('email');
+  const [isSubmiting, setIsSubmiting] = useState(false);
+
   const formik = useFormik({
     initialValues: {
-      email: 'demo@devias.io',
-      password: 'Password123!',
+      email: 'monadresse@email.com',
+      password: 'monadresse@password.com',
       submit: null
     },
     validationSchema: Yup.object({
@@ -41,14 +52,41 @@ const Page = () => {
         .required('Password is required')
     }),
     onSubmit: async (values, helpers) => {
-      try {
-        await auth.signIn(values.email, values.password);
-        router.push('/');
-      } catch (err) {
-        helpers.setStatus({ success: false });
-        helpers.setErrors({ submit: err.message });
-        helpers.setSubmitting(false);
-      }
+
+      const formData = new FormData();
+      formData.append("username", values.email);
+      formData.append("password", values.password); 
+      
+      setIsSubmiting(true);
+      
+      await auth.signIn(values.email, values.password);
+      router.push('/');
+      
+      setIsSubmiting(false);
+      
+      // try {
+      //     const response = await fetch("http://localhost:8080/login", {
+      //       method: 'POST',
+      //       body: formData,
+      //     });
+      //     if (response.ok) {             
+      //       const data = await response.json();
+      //       localStorage.setItem("token", data.accessToken);
+      //       localStorage.setItem("name", data.refreshToken);          
+      //       toast.success('Connecté avec succès');
+      //       setIsSubmiting(false);
+      //       await auth.signIn(values.email, values.password);
+      //       router.push('/');
+      //     }else{
+      //       toast.error("Nom d'utilisateur ou mot de passe incorrecte, veuillez réessayer");
+      //       setIsSubmiting(false);
+      //     }
+      // } catch (err) {
+      //   setIsSubmiting(false);
+      //   helpers.setStatus({ success: false });
+      //   helpers.setErrors({ submit: err.message });
+      //   helpers.setSubmitting(false);
+      // }
     }
   });
 
@@ -71,7 +109,7 @@ const Page = () => {
     <>
       <Head>
         <title>
-          Login | DV LOTTERY
+          Connexion | DVUSA LOTTERY
         </title>
       </Head>
       <Box
@@ -124,10 +162,6 @@ const Page = () => {
                 label="Email"
                 value="email"
               />
-              {/* <Tab
-                label="Phone Number"
-                value="phoneNumber"
-              /> */}
             </Tabs>
             {method === 'email' && (
               <form
@@ -167,47 +201,43 @@ const Page = () => {
                     {formik.errors.submit}
                   </Typography>
                 )}
-                <Button
-                  fullWidth
+                {isSubmiting ? 
+                
+                <Box
+                component="div"
+                variant="contained"
+                disabled={isSubmiting}
+                sx={{ display: 'flex', flexDirection: 'row', justifyItems: 'center', justifyContent: 'center', mt: 3  }}
+                  >
+                    <Button
+                      fullWidth
+                      size="large"
+                      variant="contained"                      
+                      disabled={isSubmiting}
+                    >
+                      Connexion en cours
+                      <HashLoader
+                      color="#fff"
+                      loading={isSubmiting}
+                      cssOverride={override}
+                      size={20}
+                      aria-label="Loading Spinner"
+                      data-testid="loader"
+                    />
+                    </Button>
+                    
+                </Box>
+                :                
+                <Button fullWidth
                   size="large"
                   sx={{ mt: 3 }}
                   type="submit"
-                  variant="contained"
-                >
-                  Continue
+                  variant="contained">
+                  Connexion                    
                 </Button>
-                {/* <Button
-                  fullWidth
-                  size="large"
-                  sx={{ mt: 3 }}
-                  onClick={handleSkip}
-                >
-                  Skip authentication
-                </Button> */}
-                <Alert
-                  color="primary"
-                  severity="info"
-                  sx={{ mt: 3 }}
-                >
-                  <div>
-                    You can use <b>demo@devias.io</b> and password <b>Password123!</b>
-                  </div>
-                </Alert>
+                }
               </form>
             )}
-            {/* {method === 'phoneNumber' && (
-              <div>
-                <Typography
-                  sx={{ mb: 1 }}
-                  variant="h6"
-                >
-                  Not available in the demo
-                </Typography>
-                <Typography color="text.secondary">
-                  To prevent unnecessary costs we disabled this feature in the demo.
-                </Typography>
-              </div>
-            )} */}
           </div>
         </Box>
       </Box>

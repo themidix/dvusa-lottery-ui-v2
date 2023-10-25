@@ -2,6 +2,8 @@ import PropTypes from 'prop-types';
 import NextLink from 'next/link';
 import { Box, Typography, Unstable_Grid2 as Grid } from '@mui/material';
 import { Logo } from 'src/components/logo';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // TODO: Change subtitle text
 
@@ -15,7 +17,20 @@ export const Layout = (props) => {
         display: 'flex',
         flex: '1 1 auto'
       }}
-    >
+    >      
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+      <ToastContainer />
       <Grid
         container
         sx={{ flex: '1 1 auto' }}

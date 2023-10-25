@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useReducer, useRef } from 'react';
 import PropTypes from 'prop-types';
+import { toast } from 'react-toastify';
 
 const HANDLERS = {
   INITIALIZE: 'INITIALIZE',
@@ -128,8 +129,32 @@ export const AuthProvider = (props) => {
   };
 
   const signIn = async (email, password) => {
-    if (email !== 'demo@devias.io' || password !== 'Password123!') {
-      throw new Error('Please check your email and password');
+
+    const formData = new FormData();
+    formData.append("username", email);
+    formData.append("password", password);
+
+    try {
+      const response = await fetch("http://localhost:8080/login", {
+        method: 'POST',
+        body: formData,
+      });
+      if (response.ok) {             
+        const data = await response.json();
+        localStorage.setItem("token", data.accessToken);
+        localStorage.setItem("name", data.refreshToken);          
+        toast.success('Connecté avec succès');
+
+      }else{
+        toast.error("Nom d'utilisateur ou mot de passe incorrecte, veuillez réessayer");
+        throw new Error('Veuillez, s\'il vous plait verifier votre adresse mail ou votre mot de passe');
+      }
+    } catch (err) {
+      helpers.setStatus({ success: false });
+      helpers.setErrors({ submit: err.message });
+      helpers.setSubmitting(false);
+      throw new Error('Quelque chose s\'est mal passee, veuillez réessayer plus tard');
+
     }
 
     try {
