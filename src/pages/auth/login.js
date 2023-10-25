@@ -19,8 +19,8 @@ import {
 } from '@mui/material';
 import { useAuth } from 'src/hooks/use-auth';
 import { Layout as AuthLayout } from 'src/layouts/auth/layout';
-import { toast } from 'react-toastify';
 import HashLoader from "react-spinners/HashLoader";
+import HomeStore from "../../store/global.store";
 
 const override = {
   display: "block",
@@ -32,7 +32,11 @@ const Page = () => {
   const router = useRouter();
   const auth = useAuth();
   const [method, setMethod] = useState('email');
-  const [isSubmiting, setIsSubmiting] = useState(false);
+
+  const {
+    isSubmitingLoading,
+    setIsSubmitingLoading
+  } = HomeStore();
 
   const formik = useFormik({
     initialValues: {
@@ -57,12 +61,12 @@ const Page = () => {
       formData.append("username", values.email);
       formData.append("password", values.password); 
       
-      setIsSubmiting(true);
+      setIsSubmitingLoading(true);
       
       await auth.signIn(values.email, values.password);
       router.push('/');
       
-      setIsSubmiting(false);
+      setIsSubmitingLoading(false);
       
       // try {
       //     const response = await fetch("http://localhost:8080/login", {
@@ -74,15 +78,15 @@ const Page = () => {
       //       localStorage.setItem("token", data.accessToken);
       //       localStorage.setItem("name", data.refreshToken);          
       //       toast.success('Connecté avec succès');
-      //       setIsSubmiting(false);
+      //       isSubmitingLoading(false);
       //       await auth.signIn(values.email, values.password);
       //       router.push('/');
       //     }else{
       //       toast.error("Nom d'utilisateur ou mot de passe incorrecte, veuillez réessayer");
-      //       setIsSubmiting(false);
+      //       isSubmitingLoading(false);
       //     }
       // } catch (err) {
-      //   setIsSubmiting(false);
+      //   isSubmitingLoading(false);
       //   helpers.setStatus({ success: false });
       //   helpers.setErrors({ submit: err.message });
       //   helpers.setSubmitting(false);
@@ -201,24 +205,24 @@ const Page = () => {
                     {formik.errors.submit}
                   </Typography>
                 )}
-                {isSubmiting ? 
+                {isSubmitingLoading ? 
                 
                 <Box
                 component="div"
                 variant="contained"
-                disabled={isSubmiting}
+                disabled={isSubmitingLoading}
                 sx={{ display: 'flex', flexDirection: 'row', justifyItems: 'center', justifyContent: 'center', mt: 3  }}
                   >
                     <Button
                       fullWidth
                       size="large"
                       variant="contained"                      
-                      disabled={isSubmiting}
+                      disabled={isSubmitingLoading}
                     >
                       Connexion en cours
                       <HashLoader
                       color="#fff"
-                      loading={isSubmiting}
+                      loading={isSubmitingLoading}
                       cssOverride={override}
                       size={20}
                       aria-label="Loading Spinner"

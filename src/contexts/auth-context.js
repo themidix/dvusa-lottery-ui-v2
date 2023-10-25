@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useReducer, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
+import HomeStore from '../store/global.store'
 
 const HANDLERS = {
   INITIALIZE: 'INITIALIZE',
@@ -65,6 +66,13 @@ export const AuthProvider = (props) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const initialized = useRef(false);
 
+  const {
+    isSubmitingLoading,
+    isAuthentificated,
+    setIsAuthentificated,
+    setIsSubmitingLoading
+  } = HomeStore();
+
   const initialize = async () => {
     // Prevent from calling twice in development mode with React.StrictMode enabled
     if (initialized.current) {
@@ -76,7 +84,7 @@ export const AuthProvider = (props) => {
     let isAuthenticated = false;
 
     try {
-      isAuthenticated = window.sessionStorage.getItem('authenticated') === 'true';
+      isAuthenticated = window.sessionStorage.getItem('authenticated') === 'true' && window.localStorage.length > 0;
     } catch (err) {
       console.error(err);
     }
@@ -129,7 +137,6 @@ export const AuthProvider = (props) => {
   };
 
   const signIn = async (email, password) => {
-
     const formData = new FormData();
     formData.append("username", email);
     formData.append("password", password);
@@ -144,17 +151,19 @@ export const AuthProvider = (props) => {
         localStorage.setItem("token", data.accessToken);
         localStorage.setItem("name", data.refreshToken);          
         toast.success('Connecté avec succès');
-
+        setIsSubmitingLoading(false);
+        setIsAuthentificated(true);
       }else{
         toast.error("Nom d'utilisateur ou mot de passe incorrecte, veuillez réessayer");
+        setIsSubmitingLoading(false);
         throw new Error('Veuillez, s\'il vous plait verifier votre adresse mail ou votre mot de passe');
       }
-    } catch (err) {
+    } catch (err) {      
+      setIsSubmitingLoading(false);
       helpers.setStatus({ success: false });
       helpers.setErrors({ submit: err.message });
       helpers.setSubmitting(false);
       throw new Error('Quelque chose s\'est mal passee, veuillez réessayer plus tard');
-
     }
 
     try {
@@ -190,7 +199,6 @@ export const AuthProvider = (props) => {
     <AuthContext.Provider
       value={{
         ...state,
-        skip,
         signIn,
         signUp,
         signOut
