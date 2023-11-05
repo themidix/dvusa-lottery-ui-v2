@@ -25,6 +25,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import ListCybercafe from 'src/components/list';
 import { useEffect } from 'react';
 import CompanyStore from 'src/store/company.store';
+import { CirclesWithBar } from  'react-loader-spinner'
 
 const companiesList = [
   {
@@ -103,6 +104,8 @@ const override = {
 const Page = () => {
   const { companies , setCompanies } = CompanyStore();
   const [open, setOpen] = useState(false);
+  const [newData, setNewData] = useState(companies);
+  const [companyCheck, setCompanyCheck] = useState('');
   const [dataLoading, setDataLoading] = useState(false);
   const [isSubmitingLoading, setIsSubmitingLoading] = useState(false);
 
@@ -150,6 +153,7 @@ const Page = () => {
         setTimeout(() => {
           setOpen(false);
           setIsSubmitingLoading(false);
+          setNewData(response.data);
         }, 2500);        
       }else{
         toast.error('Une erreur s\'est produite, veuillez reéssayer plus tard');
@@ -171,7 +175,20 @@ const Page = () => {
       }
     }
     fetchData();
-  }, [setCompanies])
+  }, [setCompanies, newData])
+
+  
+  // useEffect(()=>{    
+  //   setDataLoading(true);
+  //   async function fetchData() {      
+  //     const response = await FetchingData(`dvBusinesses/findByEmail?email=${companyCheck}`,'GET');
+  //     if(response.status === 200) {
+  //       setCompanies(response.data);
+  //       setDataLoading(false);
+  //     }
+  //   }
+  //   fetchData();
+  // }, [setCompanies, setCompanyCheck, companyCheck])
   
 
   const handleClickOpen = () => {
@@ -261,12 +278,26 @@ const Page = () => {
               </Button>
             </div>
           </Stack>
-          <CompaniesSearch />
+          <CompaniesSearch InputChangeValue={(e)=>setCompanyCheck(e)}  />
           <Grid
             container
             spacing={3}
           >
-            {dataLoading ? 'Loading...' 
+            {dataLoading ? 
+            <Box sx={{ width: "100%", display: "flex", flexDirection: "column", alignItems: 'center', mt:'4rem' }}>              
+                <CirclesWithBar
+                height="100"
+                width="100"
+                color="#483FD0"
+                wrapperStyle={{}}
+                wrapperClass=""
+                visible={true}
+                outerCircleColor=""
+                innerCircleColor=""
+                barColor=""
+                ariaLabel='circles-with-bar-loading'
+              />
+            </Box>
             :  
             <ListCybercafe />
             }
