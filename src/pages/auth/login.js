@@ -64,33 +64,11 @@ const Page = () => {
       setIsSubmitingLoading(true);
       
       await auth.signIn(values.email, values.password);
-      router.push('/');
+      setTimeout(() => {
+        router.push('/');      
+        setIsSubmitingLoading(false);
+      }, 2500);
       
-      setIsSubmitingLoading(false);
-      
-      // try {
-      //     const response = await fetch("http://localhost:8080/login", {
-      //       method: 'POST',
-      //       body: formData,
-      //     });
-      //     if (response.ok) {             
-      //       const data = await response.json();
-      //       localStorage.setItem("token", data.accessToken);
-      //       localStorage.setItem("name", data.refreshToken);          
-      //       toast.success('Connecté avec succès');
-      //       isSubmitingLoading(false);
-      //       await auth.signIn(values.email, values.password);
-      //       router.push('/');
-      //     }else{
-      //       toast.error("Nom d'utilisateur ou mot de passe incorrecte, veuillez réessayer");
-      //       isSubmitingLoading(false);
-      //     }
-      // } catch (err) {
-      //   isSubmitingLoading(false);
-      //   helpers.setStatus({ success: false });
-      //   helpers.setErrors({ submit: err.message });
-      //   helpers.setSubmitting(false);
-      // }
     }
   });
 

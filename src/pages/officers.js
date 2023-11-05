@@ -4,7 +4,7 @@ import { subDays, subHours } from 'date-fns';
 import ArrowDownOnSquareIcon from '@heroicons/react/24/solid/ArrowDownOnSquareIcon';
 import ArrowUpOnSquareIcon from '@heroicons/react/24/solid/ArrowUpOnSquareIcon';
 import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
-import { Box, Button, Container, Stack, SvgIcon, Typography } from '@mui/material';
+import { Box, Button, Container, Stack, SvgIcon, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material';
 import { useSelection } from 'src/hooks/use-selection';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
 import { CustomersTable } from 'src/sections/customer/customers-table';
@@ -180,6 +180,7 @@ const Page = () => {
   const customers = useCustomers(page, rowsPerPage);
   const customersIds = useCustomerIds(customers);
   const customersSelection = useSelection(customersIds);
+  const [open, setOpen] = useState(false);
 
   const handlePageChange = useCallback(
     (event, value) => {
@@ -195,11 +196,19 @@ const Page = () => {
     []
   );
 
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   return (
     <>
       <Head>
         <title>
-          Customers | DV USA LOTTERY
+          Officers | DV USA LOTTERY
         </title>
       </Head>
       <Box
@@ -218,7 +227,7 @@ const Page = () => {
             >
               <Stack spacing={1}>
                 <Typography variant="h4">
-                  Customers
+                  Officers
                 </Typography>
                 <Stack
                   alignItems="center"
@@ -255,8 +264,9 @@ const Page = () => {
                     </SvgIcon>
                   )}
                   variant="contained"
+                  onClick={handleClickOpen}
                 >
-                  Add
+                  Ajouter un agent
                 </Button>
               </div>
             </Stack>
@@ -276,6 +286,30 @@ const Page = () => {
             />
           </Stack>
         </Container>
+        <Dialog open={open} 
+        onClose={handleClose}
+        >
+          <DialogTitle>Formulaire</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              To subscribe to this website, please enter your email address here. We
+              will send updates occasionally.
+            </DialogContentText>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Email Address"
+              type="email"
+              fullWidth
+              variant="standard"
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>Annuler</Button>
+            <Button onClick={handleClose}>Creer</Button>
+          </DialogActions>
+        </Dialog>
       </Box>
     </>
   );
