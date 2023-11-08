@@ -175,21 +175,7 @@ const Page = () => {
       }
     }
     fetchData();
-  }, [setCompanies, newData])
-
-  
-  // useEffect(()=>{    
-  //   setDataLoading(true);
-  //   async function fetchData() {      
-  //     const response = await FetchingData(`dvBusinesses/findByEmail?email=${companyCheck}`,'GET');
-  //     if(response.status === 200) {
-  //       setCompanies(response.data);
-  //       setDataLoading(false);
-  //     }
-  //   }
-  //   fetchData();
-  // }, [setCompanies, setCompanyCheck, companyCheck])
-  
+  }, [setCompanies, newData]);  
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -319,9 +305,13 @@ const Page = () => {
     </Box>
     
     <Dialog open={open} 
-        onClose={handleClose}
+        onClose={handleClose}        
+        fullWidth={true} 
+        maxWidth={'md'}
         >
-          <DialogTitle>Enregistrement d&apos;un nouvel Cybercafe</DialogTitle>
+          <DialogTitle
+           sx={{ backgroundColor: '#1C2536', color:'white'}}
+          >Enregistrement d&apos;un nouvel Cybercafe</DialogTitle>
           <DialogContent>
             
             <form

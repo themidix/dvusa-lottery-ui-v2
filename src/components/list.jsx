@@ -111,7 +111,7 @@ export default function ListCybercafe() {
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  let pageNumber_, pageSize_;
+  let pageNumber_ = 0, pageSize_ = 0;
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -130,7 +130,6 @@ export default function ListCybercafe() {
     pageNumber_ = pageNumber;
     pageSize_ = pageSize;
   }
-  const { pageNumber, pageSize} = companies.pageable;
 
   return (
     <TableContainer component={Paper}>
@@ -166,9 +165,9 @@ export default function ListCybercafe() {
               rowsPerPageOptions={[5, 10]}
               // rowsPerPageOptions={[5, { label: 'Tous', value: -1 }]}
               colSpan={3}
-              count={companies.totalElements}
-              rowsPerPage={companies.size}
-              page={pageNumber}
+              count={companies?.totalElements}
+              rowsPerPage={companies?.size}
+              page={pageNumber_}
               SelectProps={{
                 inputProps: {
                   'aria-label': 'Items par page',
