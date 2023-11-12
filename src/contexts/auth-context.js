@@ -1,7 +1,8 @@
 import { createContext, useContext, useEffect, useReducer, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
-import HomeStore from '../store/global.store'
+import HomeStore from '../store/global.store';
+import Jwt from 'jsonwebtoken';
 
 const HANDLERS = {
   INITIALIZE: 'INITIALIZE',
@@ -148,8 +149,16 @@ export const AuthProvider = (props) => {
       });
       if (response.ok) {             
         const data = await response.json();
+
+        const token = data.accessToken;
+        const secret = "myPrivateSecret";
+        const decodedToken = Jwt.decode(token, secret);
+        const {exp, roles, sub} = decodedToken;
+
+        localStorage.setItem("userName", sub);
+        localStorage.setItem("userRoles", roles);
         localStorage.setItem("token", data.accessToken);
-        localStorage.setItem("name", data.refreshToken);          
+        localStorage.setItem("refreshToken", data.refreshToken);          
         toast.success('Connecté avec succès');
         setIsSubmitingLoading(false);
         setIsAuthentificated(true);
