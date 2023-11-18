@@ -16,6 +16,9 @@ import {
 } from '@mui/material';
 import { Scrollbar } from 'src/components/scrollbar';
 import { getInitials } from 'src/utils/get-initials';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+
 
 export const CustomersTable = (props) => {
   const {
@@ -32,8 +35,8 @@ export const CustomersTable = (props) => {
     selected = []
   } = props;
 
-  const selectedSome = (selected.length > 0) && (selected.length < items.length);
-  const selectedAll = (items.length > 0) && (selected.length === items.length);
+  // const selectedSome = (selected.length > 0) && (selected.length < items.length);
+  // const selectedAll = (items.length > 0) && (selected.length === items.length);
 
   return (
     <Card>
@@ -42,7 +45,7 @@ export const CustomersTable = (props) => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell padding="checkbox">
+                {/* <TableCell padding="checkbox">
                   <Checkbox
                     checked={selectedAll}
                     indeterminate={selectedSome}
@@ -54,72 +57,85 @@ export const CustomersTable = (props) => {
                       }
                     }}
                   />
-                </TableCell>
+                </TableCell> */}
                 <TableCell>
-                  Name
+                  Nom complet
                 </TableCell>
                 <TableCell>
                   Email
                 </TableCell>
                 <TableCell>
-                  Location
-                </TableCell>
-                <TableCell>
                   Phone
                 </TableCell>
                 <TableCell>
-                  Signed Up
+                    Cybercafe
+                </TableCell>
+                <TableCell>
+                    Id User
+                </TableCell>
+                <TableCell>
+                    Options
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {items.map((customer) => {
-                const isSelected = selected.includes(customer.id);
-                const createdAt = format(customer.createdAt, 'dd/MM/yyyy');
+              {items?.map((agent) => {
+                const isSelected = selected.includes(agent.agentId);
+                // const createdAt = format(agent.createdAt, 'dd/MM/yyyy');
 
                 return (
                   <TableRow
                     hover
-                    key={customer.id}
+                    key={agent.agentId}
                     selected={isSelected}
                   >
-                    <TableCell padding="checkbox">
+                    {/* <TableCell padding="checkbox">
                       <Checkbox
                         checked={isSelected}
                         onChange={(event) => {
                           if (event.target.checked) {
-                            onSelectOne?.(customer.id);
+                            onSelectOne?.(agent.id);
                           } else {
-                            onDeselectOne?.(customer.id);
+                            onDeselectOne?.(agent.id);
                           }
                         }}
                       />
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell>
                       <Stack
                         alignItems="center"
                         direction="row"
                         spacing={2}
                       >
-                        <Avatar src={customer.avatar}>
-                          {getInitials(customer.name)}
-                        </Avatar>
+                        {/* <Avatar src={agent.avatar}>
+                          {getInitials(agent.name)}
+                        </Avatar> */}
                         <Typography variant="subtitle2">
-                          {customer.name}
+                          {agent.lastName} {agent.middleName} {agent.firstName}
                         </Typography>
                       </Stack>
                     </TableCell>
                     <TableCell>
-                      {customer.email}
+                      {agent.agentEmail}
                     </TableCell>
                     <TableCell>
-                      {customer.address.city}, {customer.address.state}, {customer.address.country}
+                      {agent.agentPhoneNumber}
                     </TableCell>
                     <TableCell>
-                      {customer.phone}
+                      {agent.dvBusiness}
                     </TableCell>
                     <TableCell>
-                      {createdAt}
+                      {agent.user}
+                    </TableCell>
+                    <TableCell>
+                      <Stack
+                          alignItems="center"
+                          direction="row"
+                          spacing={2}
+                        >
+                         <EditIcon />  
+                         <DeleteIcon />  
+                      </Stack>
                     </TableCell>
                   </TableRow>
                 );

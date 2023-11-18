@@ -5,7 +5,7 @@ async function FetchingData (Url: string, Method: string, Body?: any): Promise<a
         method: Method,
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${localStorage.getItem("token")}`
+            "Authorization": `Bearer ${window.sessionStorage.getItem("token")}`
         },
         body: Body
     }) : 
@@ -13,7 +13,7 @@ async function FetchingData (Url: string, Method: string, Body?: any): Promise<a
         method: Method,
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${localStorage.getItem("token")}`
+            "Authorization": `Bearer ${window.sessionStorage.getItem("token")}`
         }
     });
     

@@ -21,7 +21,7 @@ const App = (props) => {
   const router = useRouter();
   useNProgress();
 
-  const getLayout = Component.getLayout ?? ((page) => page);
+  const getLayout =  Component.getLayout ?? ((page) => page);
 
   const theme = createTheme();
 
@@ -45,9 +45,12 @@ const App = (props) => {
                   (auth) => auth.isLoading
                     ? <SplashScreen />
                     : 
-                    // window.localStorage.length > 1 ?
+                    localStorage.getItem('exp') < Date.now() ?
                       getLayout(<Component {...pageProps} />) 
-                      // : router.push('/auth/login')
+                      : 
+                      <>
+                        {localStorage.clear() && sessionStorage.clear()}
+                      </>
                 }
     
             </AuthConsumer>

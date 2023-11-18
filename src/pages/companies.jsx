@@ -107,6 +107,7 @@ const Page = () => {
   const [newData, setNewData] = useState(companies);
   const [companyCheck, setCompanyCheck] = useState('');
   const [dataLoading, setDataLoading] = useState(false);
+  const [loadingCompanies, setLoadingCompanies] = useState(false);
   const [isSubmitingLoading, setIsSubmitingLoading] = useState(false);
 
   const formik = useFormik({
@@ -175,7 +176,8 @@ const Page = () => {
       }
     }
     fetchData();
-  }, [setCompanies, newData]);  
+  }, [setCompanies, newData]);
+
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -270,36 +272,25 @@ const Page = () => {
             spacing={3}
           >
             {dataLoading ? 
-            <Box sx={{ width: "100%", display: "flex", flexDirection: "column", alignItems: 'center', mt:'4rem' }}>              
-                <CirclesWithBar
-                height="100"
-                width="100"
-                color="#483FD0"
-                wrapperStyle={{}}
-                wrapperClass=""
-                visible={true}
-                outerCircleColor=""
-                innerCircleColor=""
-                barColor=""
-                ariaLabel='circles-with-bar-loading'
-              />
-            </Box>
+              <Box sx={{ width: "100%", display: "flex", flexDirection: "column", alignItems: 'center', mt:'4rem' }}>              
+                  <CirclesWithBar
+                  height="100"
+                  width="100"
+                  color="#483FD0"
+                  wrapperStyle={{}}
+                  wrapperClass=""
+                  visible={true}
+                  outerCircleColor=""
+                  innerCircleColor=""
+                  barColor=""
+                  ariaLabel='circles-with-bar-loading'
+                />
+              </Box>
             :  
             <ListCybercafe />
             }
            
           </Grid>
-          {/* <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'center'
-            }}
-          >
-            <Pagination
-              count={3}
-              size="small"
-            />
-          </Box> */}
         </Stack>
       </Container>
     </Box>

@@ -1,10 +1,10 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState, useEffect } from 'react';  
 import Head from 'next/head';
 import { subDays, subHours } from 'date-fns';
 import ArrowDownOnSquareIcon from '@heroicons/react/24/solid/ArrowDownOnSquareIcon';
 import ArrowUpOnSquareIcon from '@heroicons/react/24/solid/ArrowUpOnSquareIcon';
 import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
-import { Box, Button, Container, Stack, SvgIcon, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material';
+import { Box, Button, Container, Stack, SvgIcon, Typography, Dialog, DialogContent, DialogTitle, TextField, Select,  FormControl, InputLabel, MenuItem } from '@mui/material';
 import { useSelection } from 'src/hooks/use-selection';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
 import { CustomersTable } from 'src/sections/customer/customers-table';
@@ -13,6 +13,19 @@ import { applyPagination } from 'src/utils/apply-pagination';
 import HashLoader from "react-spinners/HashLoader";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import CompanyStore from 'src/store/company.store';
+import FetchingData from 'src/utils/fetch-data';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query';
+import { CirclesWithBar } from  'react-loader-spinner'
+import AgentStore from 'src/store/agent.store';
 
 const now = new Date();
 
@@ -159,6 +172,12 @@ const data = [
   }
 ];
 
+const override = {
+  display: "block",
+  margin: "0 2rem",
+  borderColor: "#ffffff",
+};
+
 const useCustomers = (page, rowsPerPage) => {
   return useMemo(
     () => {
@@ -177,6 +196,8 @@ const useCustomerIds = (customers) => {
   );
 };
 
+const queryClient = new QueryClient();
+
 const Page = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -185,58 +206,109 @@ const Page = () => {
   const customersSelection = useSelection(customersIds);
   const [open, setOpen] = useState(false);
   const [isSubmitingLoading, setIsSubmitingLoading] = useState(false);
+  const [isLoadingBusinesse, setIsLoadingBusinesse] = useState(false);
+  const [isLoadingData, setIsLoadingData] = useState(false);
+
+  const { companies, setCompanies } = CompanyStore();
+  const { agents, setAgents } = AgentStore();
+  
+  useEffect(()=>{    
+    setIsLoadingBusinesse(true);
+    async function fetchData() {      
+      const response = await FetchingData('dvBusinesses','GET');
+      if(response.status === 200) {
+        const { content, numberOfElements , totalPages, totalElements  } = await response.data;
+        setCompanies(content);
+        setIsLoadingBusinesse(false);
+      }
+    }
+    fetchData();
+  }, [setCompanies , setIsLoadingBusinesse]);
+
+  useEffect(()=>{    
+    setIsLoadingData(true);
+    async function fetchData() {      
+      const response = await FetchingData('agent','GET');
+      if(response.status === 200) {
+        // const { content, numberOfElements , totalPages, totalElements  } = await response.data;
+        setAgents(response.data);
+        setIsLoadingData(false);
+      }
+    }
+    fetchData();
+  }, []);
 
   const formik = useFormik({
     initialValues: {
-      businessName: '',
-      businessAddress: '',
-      businessEmail: '',
-      businessPhoneNumber: '',
+      first_name: '',
+      middle_name: '',
+      last_name: '',
+      agent_email: '',
+      agent_phone_number: '',
+      dv_business_id: '',
       submit: null
     },
     validationSchema: Yup.object({
-      businessEmail: Yup
+      agent_email: Yup
         .string()
         .email('Veuillez saisir une adresse email valide')
-        .max(255)
+        .max(45)
         .required('Le mail est obligatoire'),
-      businessAddress: Yup
+      agent_phone_number: Yup
         .string()
-        .max(255)
-        .required('L\'adresse est obligatoire')
-        .min(10, 'Il faut saisir au moins 10 caracteres'),
-      businessPhoneNumber: Yup
-        .string()
-        .max(255)
+        .max(45)
         .required('Le numero de telephone est obligatoire'),
-      businessName: Yup
+      first_name: Yup
         .string()
-        .max(255)
-        .min(5, 'Il faut saisir au moins 5 caracteres')
-        .required('Le nom du cybercafe est obligatoire'),
+        .max(45)
+        .min(2, 'Il faut saisir au moins 2 caracteres')
+        .required('Le prenom est obligatoire'),
+      middle_name: Yup
+        .string()
+        .max(45)
+        .min(2, 'Il faut saisir au moins 2 caracteres')
+        .required('Le postnom est obligatoire'),
+      last_name: Yup
+        .string()
+        .max(45)
+        .min(2, 'Il faut saisir au moins 2 caracteres')
+        .required('Le nom est obligatoire'),
+      dv_business_id: Yup
+        .number()
+        .max(45)
+        .min(1)
+        .required('Le choix du cybercafe est obligatoire'),
     }),
     onSubmit: async (values, helpers) => {
+      try {
+        const objectData = JSON.stringify({
+          firstName : values.first_name,
+          middleName : values.middle_name,
+          lastName : values.last_name,
+          agentPhoneNumber: values.agent_phone_number,
+          // dvBusiness: values.dv_business_id,
+          // user_id: localStorage.getItem('user_id'),
+          agentEmail: values.agent_email,
+        });
+        setIsSubmitingLoading(true);
 
-      const objectData = JSON.stringify({
-        businessName : values.businessName,
-        businessAddress: values.businessAddress,
-        businessPhoneNumber: values.businessPhoneNumber,
-        businessEmail: values.businessEmail
-      });
-      setIsSubmitingLoading(true);
-      const response = await FetchingData('dvBusinesses','POST', objectData );
-      if(response.status === 200 || response.status === 201) {
-        toast.success('Enregistrement effectue avec success');
-        setTimeout(() => {
-          setOpen(false);
+        const response = await FetchingData('agent','POST', objectData );
+        if(response.status === 200 || response.status === 201) {
+          toast.success('Enregistrement effectue avec success');
+
+          setTimeout(() => {
+            setOpen(false);
+            setIsSubmitingLoading(false);
+            setIsLoadingData(true);
+          }, 2000);        
+        }else{
+          toast.error('Une erreur s\'est produite, veuillez reéssayer plus tard');
           setIsSubmitingLoading(false);
-          setNewData(response.data);
-        }, 2500);        
-      }else{
+        }
+      } catch (error) {
         toast.error('Une erreur s\'est produite, veuillez reéssayer plus tard');
         setIsSubmitingLoading(false);
       }
-      
     }
   });
 
@@ -269,209 +341,261 @@ const Page = () => {
           Officers | DV USA LOTTERY
         </title>
       </Head>
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          py: 8
-        }}
-      >
-        <Container maxWidth="xl">
-          <Stack spacing={3}>
-            <Stack
-              direction="row"
-              justifyContent="space-between"
-              spacing={4}
-            >
-              <Stack spacing={1}>
-                <Typography variant="h4">
-                  Officers
-                </Typography>
-                <Stack
-                  alignItems="center"
-                  direction="row"
-                  spacing={1}
-                >
-                  <Button
-                    color="inherit"
-                    startIcon={(
-                      <SvgIcon fontSize="small">
-                        <ArrowUpOnSquareIcon />
-                      </SvgIcon>
-                    )}
-                  >
-                    Import
-                  </Button>
-                  <Button
-                    color="inherit"
-                    startIcon={(
-                      <SvgIcon fontSize="small">
-                        <ArrowDownOnSquareIcon />
-                      </SvgIcon>
-                    )}
-                  >
-                    Export
-                  </Button>
-                </Stack>
-              </Stack>
-              <div>
-                <Button
-                  startIcon={(
-                    <SvgIcon fontSize="small">
-                      <PlusIcon />
-                    </SvgIcon>
-                  )}
-                  variant="contained"
-                  onClick={handleClickOpen}
-                >
-                  Ajouter un agent
-                </Button>
-              </div>
-            </Stack>
-            <CustomersSearch />
-            <CustomersTable
-              count={data.length}
-              items={customers}
-              onDeselectAll={customersSelection.handleDeselectAll}
-              onDeselectOne={customersSelection.handleDeselectOne}
-              onPageChange={handlePageChange}
-              onRowsPerPageChange={handleRowsPerPageChange}
-              onSelectAll={customersSelection.handleSelectAll}
-              onSelectOne={customersSelection.handleSelectOne}
-              page={page}
-              rowsPerPage={rowsPerPage}
-              selected={customersSelection.selected}
-            />
-          </Stack>
-        </Container>
-
-
-        <Dialog open={open}
-        fullWidth={true} 
-        maxWidth={'md'}
-        onClose={handleClose} 
+      <QueryClientProvider client={queryClient}>
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            py: 8
+          }}
         >
-          <DialogTitle sx={{ backgroundColor: '#1C2536', color:'white'}}>Créer un agent</DialogTitle>
-          <DialogContent>
-            
-            <form
-                noValidate
-                onSubmit={formik.handleSubmit}                
-                aria-describedby="alert-dialog-slide-description"
+          <Container maxWidth="xl">
+            <Stack spacing={3}>
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                spacing={4}
               >
-                <Stack spacing={3}>
-                  <TextField
-                    error={!!(formik.touched.businessName && formik.errors.businessName)}
-                    fullWidth
-                    helperText={formik.touched.businessName && formik.errors.businessName}
-                    label="Nom du Cybercafe"
-                    name="businessName"
-                    onBlur={formik.handleBlur}
-                    onChange={formik.handleChange}
-                    type="text"
-                    placeholder='Nom du Cybercafe'
-                    value={formik.values.businessName}
-                    sx={{ mt:1}}
-                  />
-                   <TextField
-                    error={!!(formik.touched.businessEmail && formik.errors.businessEmail)}
-                    fullWidth
-                    helperText={formik.touched.businessEmail && formik.errors.businessEmail}
-                    label="Adresse mail"
-                    name="businessEmail"
-                    onBlur={formik.handleBlur}
-                    onChange={formik.handleChange}
-                    type="email"
-                    placeholder='Votre mail'
-                    value={formik.values.businessEmail}
-                  />
-                   <TextField
-                    error={!!(formik.touched.businessPhoneNumber && formik.errors.businessPhoneNumber)}
-                    fullWidth
-                    helperText={formik.touched.businessPhoneNumber && formik.errors.businessPhoneNumber}
-                    label="Numero de telephone"
-                    name="businessPhoneNumber"
-                    onBlur={formik.handleBlur}
-                    onChange={formik.handleChange}
-                    type="tel"
-                    placeholder='Votre numero de telephone'
-                    value={formik.values.businessPhoneNumber}
-                  />
-                  <TextField
-                    error={!!(formik.touched.businessAddress && formik.errors.businessAddress)}
-                    fullWidth
-                    helperText={formik.touched.businessAddress && formik.errors.businessAddress}
-                    label="Adresse"
-                    name="businessAddress"
-                    onBlur={formik.handleBlur}
-                    onChange={formik.handleChange}
-                    placeholder='Votre adresse'
-                    type="text"
-                    value={formik.values.businessAddress}
-                  />
-                </Stack>
-                {formik.errors.submit && (
-                  <Typography
-                    color="error"
-                    sx={{ mt: 3 }}
-                    variant="body2"
-                  >
-                    {formik.errors.submit}
+                <Stack spacing={1}>
+                  <Typography variant="h4">
+                    Agents
                   </Typography>
-                )}
-                
-                {isSubmitingLoading ? 
-                <>
+                  <Stack
+                    alignItems="center"
+                    direction="row"
+                    spacing={1}
+                  >
+                    <Button
+                      color="inherit"
+                      startIcon={(
+                        <SvgIcon fontSize="small">
+                          <ArrowUpOnSquareIcon />
+                        </SvgIcon>
+                      )}
+                    >
+                      Import
+                    </Button>
+                    <Button
+                      color="inherit"
+                      startIcon={(
+                        <SvgIcon fontSize="small">
+                          <ArrowDownOnSquareIcon />
+                        </SvgIcon>
+                      )}
+                    >
+                      Export
+                    </Button>
+                  </Stack>
+                </Stack>
+                <div>
+                  <Button
+                    startIcon={(
+                      <SvgIcon fontSize="small">
+                        <PlusIcon />
+                      </SvgIcon>
+                    )}
+                    variant="contained"
+                    onClick={handleClickOpen}
+                  >
+                    Ajouter un agent
+                  </Button>
+                </div>
+              </Stack>
+              <CustomersSearch />
+              {isLoadingData ? 
+                <Box sx={{ width: "100%", display: "flex", flexDirection: "column", alignItems: 'center', mt:'4rem' }}>              
+                  <CirclesWithBar
+                  height="100"
+                  width="100"
+                  color="#483FD0"
+                  wrapperStyle={{}}
+                  wrapperClass=""
+                  visible={true}
+                  outerCircleColor=""
+                  innerCircleColor=""
+                  barColor=""
+                  ariaLabel='circles-with-bar-loading'
+                />
+                </Box>
+              :
+              <CustomersTable
+                count={agents?.length}
+                items={agents}
+                onDeselectAll={customersSelection.handleDeselectAll}
+                onDeselectOne={customersSelection.handleDeselectOne}
+                onPageChange={handlePageChange}
+                onRowsPerPageChange={handleRowsPerPageChange}
+                onSelectAll={customersSelection.handleSelectAll}
+                onSelectOne={customersSelection.handleSelectOne}
+                page={page}
+                rowsPerPage={rowsPerPage}
+                selected={customersSelection.selected}
+              />
+              }
+            </Stack>
+          </Container>
+
+          <Dialog open={open}
+          fullWidth={true} 
+          maxWidth={'md'}
+          onClose={handleClose} 
+          >
+            <DialogTitle sx={{ backgroundColor: '#1C2536', color:'white'}}>Créer un agent</DialogTitle>
+            <DialogContent>
+              <form
+                  noValidate
+                  onSubmit={formik.handleSubmit}                
+                  aria-describedby="alert-dialog-slide-description"
+                >
+                  <Stack spacing={1}>
+                    <TextField
+                      error={!!(formik.touched.first_name && formik.errors.first_name)}
+                      fullWidth
+                      helperText={formik.touched.first_name && formik.errors.first_name}
+                      label="Prenom"
+                      name="first_name"
+                      onBlur={formik.handleBlur}
+                      onChange={formik.handleChange}
+                      type="text"
+                      placeholder='Prenom'
+                      value={formik.values.first_name}
+                      sx={{ mt:1}}
+                    />
+                    <TextField
+                      error={!!(formik.touched.middle_name && formik.errors.middle_name)}
+                      fullWidth
+                      helperText={formik.touched.middle_name && formik.errors.middle_name}
+                      label="Prenom"
+                      name="middle_name"
+                      onBlur={formik.handleBlur}
+                      onChange={formik.handleChange}
+                      type="text"
+                      placeholder='Postnom'
+                      value={formik.values.middle_name}
+                      sx={{ mt:1}}
+                    />
+                    <TextField
+                      error={!!(formik.touched.last_name && formik.errors.last_name)}
+                      fullWidth
+                      helperText={formik.touched.last_name && formik.errors.last_name}
+                      label="Nom de famillle"
+                      name="last_name"
+                      onBlur={formik.handleBlur}
+                      onChange={formik.handleChange}
+                      type="text"
+                      placeholder='Nom'
+                      value={formik.values.last_name}
+                      sx={{ mt:1}}
+                    />
+                    <TextField
+                      error={!!(formik.touched.agent_email && formik.errors.agent_email)}
+                      fullWidth
+                      helperText={formik.touched.agent_email && formik.errors.agent_email}
+                      label="Adresse mail"
+                      name="agent_email"
+                      onBlur={formik.handleBlur}
+                      onChange={formik.handleChange}
+                      type="email"
+                      placeholder='Votre mail'
+                      value={formik.values.agent_email}
+                    />
+                    <TextField
+                      error={!!(formik.touched.agent_phone_number && formik.errors.agent_phone_number)}
+                      fullWidth
+                      helperText={formik.touched.agent_phone_number && formik.errors.agent_phone_number}
+                      label="Numero de telephone"
+                      name="agent_phone_number"
+                      onBlur={formik.handleBlur}
+                      onChange={formik.handleChange}
+                      type="tel"
+                      placeholder='Votre numero de telephone'
+                      value={formik.values.agent_phone_number}
+                    />
+                    <FormControl x={{ m: 1, minWidth: 120 }}>
+                      <InputLabel id="select-cybercafe">Cybercafe</InputLabel>
+                      {isLoadingBusinesse ? " Chargement......"
+                        :
+                        <Select
+                          labelId="select-cybercafe"
+                          id="demo-simple-select-standard"
+                          value={formik.values.dv_business_id}
+                          onChange={formik.handleChange}                        
+                          label="Cybercafe"
+                          name='dv_business_id'
+                        >                        
+                          {companies?.map( (company, index) => {
+                            return (
+                              <MenuItem  value={company.dvBusinessId} 
+                                key={index}>
+                                {company.businessName}
+                              </MenuItem>
+                            )
+                          })}
+                        </Select>
+                      }
+                    </FormControl>
+                  </Stack>
+                  {formik.errors.submit && (
+                    <Typography
+                      color="error"
+                      sx={{ mt: 3 }}
+                      variant="body2"
+                    >
+                      {formik.errors.submit}
+                    </Typography>
+                  )}
+                  
+                  {isSubmitingLoading ? 
+                  <>
+                    <Box
+                    component="div"
+                    variant="contained"
+                    disabled={isSubmitingLoading}
+                    sx={{ display: 'flex', flexDirection: 'row', justifyItems: 'center', justifyContent: 'center', mt: 3  }}
+                      >
+                        <Button
+                          fullWidth
+                          // size="large"
+                          variant="contained"                      
+                          disabled={isSubmitingLoading}
+                        >
+                          Enregistrement en cours
+                          <HashLoader
+                            color="#fff"
+                            loading={isSubmitingLoading}
+                            cssOverride={override}
+                            size={20}
+                            aria-label="Loading Spinner"
+                            data-testid="loader"
+                          />
+                        </Button>
+                    </Box>                
+                  </>
+                  :  
                   <Box
                   component="div"
                   variant="contained"
-                  disabled={isSubmitingLoading}
-                  sx={{ display: 'flex', flexDirection: 'row', justifyItems: 'center', justifyContent: 'center', mt: 3  }}
-                    >
-                      <Button
-                        fullWidth
-                        // size="large"
-                        variant="contained"                      
-                        disabled={isSubmitingLoading}
-                      >
-                        Enregistrement en cours
-                        <HashLoader
-                          color="#fff"
-                          loading={isSubmitingLoading}
-                          cssOverride={override}
-                          size={20}
-                          aria-label="Loading Spinner"
-                          data-testid="loader"
-                        />
-                      </Button>
-                  </Box>                
-                </>
-                :  
-                <Box
-                component="div"
-                variant="contained"
-                sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', mt: 3, gap: 2  }}
-                  >          
-                  <Button 
-                    // fullWidth
-                    size="large"
-                    sx={{ mt: 3 }}
-                    type="submit"
-                    variant="contained">
-                    Créer                  
-                  </Button>
-                  <Button 
-                  // fullWidth
-                    size="large"
-                    sx={{ mt: 3 }}  
-                    variant="contained" 
-                    onClick={handleClose}>Annuler</Button>
-                </Box>    
-                }
-              </form>
-          </DialogContent>
-        </Dialog>
-      </Box>
+                  sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', mt: 3, gap: 2  }}
+                    >          
+                    <Button 
+                      size="large"
+                      sx={{ mt: 3 }}
+                      type="submit"
+                      variant="contained">
+                      Créer                  
+                    </Button>
+                    <Button 
+                      size="large"
+                      sx={{ mt: 3 }}  
+                      variant="contained" 
+                      onClick={handleClose}>Annuler</Button>
+                  </Box>    
+                  }
+                </form>
+            </DialogContent>
+          </Dialog>
+        </Box>
+      </QueryClientProvider>
     </>
   );
 };
