@@ -106,7 +106,7 @@ const Page = () => {
   const [open, setOpen] = useState(false);
   const [newData, setNewData] = useState(companies);
   const [companyCheck, setCompanyCheck] = useState('');
-  const [dataLoading, setDataLoading] = useState(false);
+  const [isDataLoading, setDataLoading] = useState(false);
   const [loadingCompanies, setLoadingCompanies] = useState(false);
   const [isSubmitingLoading, setIsSubmitingLoading] = useState(false);
 
@@ -164,7 +164,6 @@ const Page = () => {
     }
   });
 
-
   useEffect(()=>{    
     setDataLoading(true);
     async function fetchData() {      
@@ -172,7 +171,9 @@ const Page = () => {
       if(response.status === 200) {
         const { content, numberOfElements , totalPages, totalElements  } = await response.data;
         setCompanies(response.data);
-        setDataLoading(false);
+        setTimeout(() => {
+          setDataLoading(false);
+        }, 1000);
       }
     }
     fetchData();
@@ -271,7 +272,7 @@ const Page = () => {
             container
             spacing={3}
           >
-            {dataLoading ? 
+            {isDataLoading ? 
               <Box sx={{ width: "100%", display: "flex", flexDirection: "column", alignItems: 'center', mt:'4rem' }}>              
                   <CirclesWithBar
                   height="100"
@@ -287,7 +288,7 @@ const Page = () => {
                 />
               </Box>
             :  
-            <ListCybercafe />
+              <ListCybercafe />
             }
            
           </Grid>

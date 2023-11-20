@@ -125,8 +125,9 @@ export default function ListCybercafe() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-  if(companies.length > 0){    
-    const { pageNumber, pageSize} = companies.pageable;
+
+  if(companies.length > 0 && companies?.pageable.length > 0){    
+    const { pageNumber, pageSize} = companies?.pageable;
     pageNumber_ = pageNumber;
     pageSize_ = pageSize;
   }
@@ -146,16 +147,16 @@ export default function ListCybercafe() {
            </TableRow>
         </TableHead>
         <TableBody>
-           {companies.content?.map((row) => (
-            <StyledTableRow key={row.dvBusinessId}>
+           {companies.content?.map((company) => (
+            <StyledTableRow key={company.dvBusinessId}>
               <StyledTableCell component="th" 
               scope="row">
-                {row.businessName}
+                {company.businessName}
               </StyledTableCell>
-              <StyledTableCell align="right">{row.businessEmail}</StyledTableCell>
-              <StyledTableCell align="right">{row.businessPhoneNumber}</StyledTableCell>
-              <StyledTableCell align="right">{row.businessAddress}</StyledTableCell>
-              <StyledTableCell align="right">{row.businessAddress}</StyledTableCell>
+              <StyledTableCell align="right">{company.businessEmail}</StyledTableCell>
+              <StyledTableCell align="right">{company.businessPhoneNumber}</StyledTableCell>
+              <StyledTableCell align="right">{company.businessAddress}</StyledTableCell>
+              <StyledTableCell align="right">{company.businessAddress}</StyledTableCell>
             </StyledTableRow>
           ))}
         </TableBody>

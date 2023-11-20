@@ -151,30 +151,31 @@ export const AuthProvider = (props) => {
       });
       if (response.ok) {             
         const data = await response.json();
-        setTimeout(()=>{
-          toast.success('Connecté avec succès');
-        }, 2500);
-        
-        const token = data.accessToken;
-        const secret = "myPrivateSecret";
-        const decodedToken = Jwt.decode(token, secret);
-        const {exp, roles, sub}  = decodedToken;
+        toast.success('Connecté avec succès');
 
-        window.localStorage.setItem("userName", sub);
-        window.localStorage.setItem("userRoles", roles[0]);
-        window.localStorage.setItem("exp", (parseInt(exp) * 1000));
-        window.localStorage.setItem("token", data.accessToken);
-        window.localStorage.setItem("refreshToken", data.refreshToken);  
+        setTimeout(()=>{
+          const token = data.accessToken;
+          const secret = "myPrivateSecret";
+          const decodedToken = Jwt.decode(token, secret);
+          const {exp, roles, sub}  = decodedToken;
+
+          window.localStorage.setItem("userName", sub);
+          window.localStorage.setItem("userRoles", roles[0]);
+          window.localStorage.setItem("exp", (parseInt(exp) * 1000));
+          window.localStorage.setItem("token", data.accessToken);
+          window.localStorage.setItem("refreshToken", data.refreshToken);  
+          
+          //Session
+          window.sessionStorage.setItem("userName", sub);
+          window.sessionStorage.setItem("userRoles", roles[0]);
+          window.sessionStorage.setItem("exp", (parseInt(exp) * 1000));
+          window.sessionStorage.setItem("token", data.accessToken);
+          window.sessionStorage.setItem("refreshToken", data.refreshToken);   
+                
+          setIsSubmitingLoading(false);
+          setIsAuthentificated(true);
+        }, 3000);
         
-        //Session
-        window.sessionStorage.setItem("userName", sub);
-        window.sessionStorage.setItem("userRoles", roles[0]);
-        window.sessionStorage.setItem("exp", (parseInt(exp) * 1000));
-        window.sessionStorage.setItem("token", data.accessToken);
-        window.sessionStorage.setItem("refreshToken", data.refreshToken);   
-               
-        setIsSubmitingLoading(false);
-        setIsAuthentificated(true);
       }else{
         toast.error("Nom d'utilisateur ou mot de passe incorrecte, veuillez réessayer");
         setIsSubmitingLoading(false);
