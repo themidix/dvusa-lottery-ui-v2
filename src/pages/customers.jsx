@@ -10,6 +10,8 @@ import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
 import { CustomersTable } from 'src/sections/customer/customers-table';
 import { CustomersSearch } from 'src/sections/customer/customers-search';
 import { applyPagination } from 'src/utils/apply-pagination';
+import FormAddCustomer from 'src/sections/customer/modalAdd';
+import CustomerStore from 'src/store/customer.store';
 
 const now = new Date();
 
@@ -181,6 +183,8 @@ const Page = () => {
   const customersIds = useCustomerIds(customers);
   const customersSelection = useSelection(customersIds);
 
+  const { isOpenModalAdd, setIsOpenModalAdd} = CustomerStore();
+
   const handlePageChange = useCallback(
     (event, value) => {
       setPage(value);
@@ -199,7 +203,7 @@ const Page = () => {
     <>
       <Head>
         <title>
-          Customers | DV USA LOTTERY
+          Clients | DV USA LOTTERY
         </title>
       </Head>
       <Box
@@ -247,7 +251,9 @@ const Page = () => {
                   </Button>
                 </Stack>
               </Stack>
-              <div>
+              <div
+              onClick={() => setIsOpenModalAdd(true)} 
+              >
                 <Button
                   startIcon={(
                     <SvgIcon fontSize="small">
@@ -277,6 +283,7 @@ const Page = () => {
           </Stack>
         </Container>
       </Box>
+      <FormAddCustomer />
     </>
   );
 };
