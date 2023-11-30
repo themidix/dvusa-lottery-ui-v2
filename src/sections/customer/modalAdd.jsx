@@ -7,21 +7,10 @@ import HashLoader from "react-spinners/HashLoader";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import EntrantForm from './entrantForm';
+import EntrantMoreInfoForm from './moreInfoForm';
 
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-};
 
 const steps = ['Information Personnelle', 'Information Complementaire', 'Resume'];
-
 
 export default function FormAddCustomer() {
   const {isOpenModalAdd, setIsOpenModalAdd} = CustomerStore();
@@ -48,55 +37,144 @@ export default function FormAddCustomer() {
   
   const formik = useFormik({
     initialValues: {
-      first_name: '',
-      middle_name: '',
-      last_name: '',
-      agent_email: '',
-      agent_phone_number: '',
-      dv_business_id: '',
+      firstName: '',
+      lastName: '',
+      middleName: '',
+      birthDate: '',
+      birthCity: '',
+      countryOfBirth: '',
+      firstNameSpouseDTO: '',
+      lastNameSpouseDTO: '',
+      middleNameSpouseDTO: '',
+      birthDateSpouseDTO: '',
+      birthCitySpouseDTO: '',
+      countryOfBirthSpouseDTO: '',
+      eligibilityCountry: '',
+      entrantPhotograph: '',
+      photographSpouseDTO: '',
+      phoneNumber: '',
+      emailAddress: '',
+      gender: '',
+      countryOfResidence: '',
+      educationLevel: '',
+      maritalStatus: '',
+      numberOfChildren: 0,
       submit: null
     },
     validationSchema: Yup.object({
-      agent_email: Yup
+      emailAddress: Yup
         .string()
         .email('Veuillez saisir une adresse email valide')
         .max(45)
         .required('Le mail est obligatoire'),
-      agent_phone_number: Yup
+      phoneNumber: Yup
         .string()
         .max(45)
         .required('Le numero de telephone est obligatoire'),
-      first_name: Yup
+      firstName: Yup
         .string()
         .max(45)
         .min(2, 'Il faut saisir au moins 2 caracteres')
         .required('Le prenom est obligatoire'),
-      middle_name: Yup
+      middleName: Yup
         .string()
         .max(45)
-        .min(2, 'Il faut saisir au moins 2 caracteres')
-        .required('Le postnom est obligatoire'),
-      last_name: Yup
+        .min(2, 'Il faut saisir au moins 2 caracteres'),
+        // .required('Le postnom est obligatoire'),
+      lastName: Yup
         .string()
         .max(45)
         .min(2, 'Il faut saisir au moins 2 caracteres')
         .required('Le nom est obligatoire'),
-      dv_business_id: Yup
-        .number()
+      birthDate: Yup
+        .date()
+        .required('La date de naissance est obligatoire'),
+      birthCity: Yup
+        .string()
         .max(45)
-        .min(1)
-        .required('Le choix du cybercafe est obligatoire'),
+        .min(2, 'Il faut saisir au moins 2 caracteres')
+        .required('La ville de Naissance est obligatoire'),
+      countryOfBirth: Yup
+        .string()
+        .max(45)
+        .min(2, 'Il faut saisir au moins 2 caracteres')
+        .required('Le pays de naissance est obligatoire'),
+      entrantPhotograph: Yup
+        .string()
+        .max(45)
+        .min(2, 'Il faut saisir au moins 2 caracteres')
+        .required('La photo est obligatoire'),
+      gender: Yup
+        .string()
+        .max(45)
+        .min(2, 'Il faut saisir au moins 2 caracteres')
+        .required('Le genre est obligatoire'),
+      countryOfResidence: Yup
+        .string()
+        .max(45)
+        .min(2, 'Il faut saisir au moins 2 caracteres')
+        .required('Le pays de residence est obligatoire'),
+      spouseDTO: Yup
+        .string()
+        .max(45)
+        .min(2, 'Il faut saisir au moins 2 caracteres'),
+      firstNameSpouseDTO: Yup
+        .string()
+        .max(45)
+        .min(2, 'Le prenom doit avoir au moins 2 caracteres')
+        .required('Le prenom est obligatoire'),
+      lastNameSpouseDTO: Yup
+        .string()
+        .max(45)
+        .min(2, 'Il faut saisir au moins 2 caracteres')
+        .required('Le nom est obligatoire'),
+      middleNameSpouseDTO: Yup
+        .string()
+        .max(45)
+        .min(2, 'Il faut saisir au moins 2 caracteres'),
+        // .required('Le postnom est obligatoire'),
+      genderSpouseDTO: Yup
+          .string()
+          .max(45)
+          .min(2, 'Il faut saisir au moins 2 caracteres')
+          .required('Le genre est obligatoire'),
+      birthDateSpouseDTO: Yup
+          .date()
+          .required('La date de naissance est obligatoire'),
+      birthCitySpouseDTO: Yup
+          .string()
+          .max(45)
+          .min(2, 'Il faut saisir au moins 2 caracteres')
+          .required('La ville de Naissance est obligatoire'),
+      countryOfBirthSpouseDTO: Yup
+          .string()
+          .max(45)
+          .min(2, 'Il faut saisir au moins 2 caracteres')
+          .required('Le pays de naissance est obligatoire'),
+      photographSpouseDTO: Yup
+          .string()
+          .max(45)
+          .min(2, 'Il faut saisir au moins 2 caracteres')
+          .required('La photo est obligatoire'),
+      numberOfChildren: Yup
+        .number()
+        .max(30)
+        .min(0, 'La valeur minimale est 0')
+        .required('Le nombre d\'enfant est obligatoire'),
+      educationLevel: Yup
+        .string()
+        .max(45)
+        .min(2, 'Il faut saisir au moins 2 caracteres')
+        .required('Le niveau scolaire est obligatoire'),
     }),
     onSubmit: async (values, helpers) => {
       try {
         const objectData = JSON.stringify({
-          firstName : values.first_name,
-          middleName : values.middle_name,
-          lastName : values.last_name,
-          agentPhoneNumber: values.agent_phone_number,
-          // dvBusiness: values.dv_business_id,
-          // user_id: localStorage.getItem('user_id'),
-          agentEmail: values.agent_email,
+          firstName : values.firstName,
+          middleName : values.middleName,
+          lastName : values.lastName,
+          phoneNumber: values.phoneNumber,
+          emailAddress: values.emailAddress,
         });
         setIsSubmitingLoading(true);
 
@@ -143,10 +221,9 @@ export default function FormAddCustomer() {
       case 0:
         return <EntrantForm formData={formik}/>;
       case 1:
-        return <EntrantForm formData={formData} 
-                    setFormData={setFormData} />;
+        return <EntrantMoreInfoForm formData={formik} />;
       case 2:
-        return <EntrantForm formData={formData} />;
+        return <EntrantForm formData={formik} />;
       default:
         return 'Étape inconnue';
     }
@@ -161,7 +238,8 @@ export default function FormAddCustomer() {
         >
             <DialogTitle sx={{ backgroundColor: '#1C2536', color:'white'}}>Créer un entrant</DialogTitle>
             <DialogContent>
-                <Stepper activeStep={activeStep} sx={{mt:"1rem"}}>
+                <Stepper activeStep={activeStep} 
+                  sx={{mt:"1rem"}}>
                     {steps.map((label, index) => {
                     const stepProps = {};
                     const labelProps = {};

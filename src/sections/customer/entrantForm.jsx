@@ -11,7 +11,8 @@ const EntrantForm = ({ formData, setFormData }) => {
         <Grid  container 
           spacing={2}>
           <Grid item 
-              xs={6}>                
+              xs={6} 
+              sx={{ display: "flex", flexDirection: "column" ,gap: 1}}>                
             <TextField
               error={!!(formData.touched.firstName && formData.errors.firstName)}
               fullWidth
@@ -23,7 +24,6 @@ const EntrantForm = ({ formData, setFormData }) => {
               type="text"
               placeholder='Prenom'
               value={formData.values.firstName}
-              sx={{ mt:1}}
             />
             <TextField
               error={!!(formData.touched.middleName && formData.errors.middleName)}
@@ -36,7 +36,6 @@ const EntrantForm = ({ formData, setFormData }) => {
               type="text"
               placeholder='Postnom'
               value={formData.values.middleName}
-              sx={{ mt:1}}
             />
             <TextField
               error={!!(formData.touched.lastName && formData.errors.lastName)}
@@ -49,7 +48,6 @@ const EntrantForm = ({ formData, setFormData }) => {
               type="text"
               placeholder='Nom'
               value={formData.values.lastName}
-              sx={{ mt:1}}
             />
             <TextField
               error={!!(formData.touched.emailAddress && formData.errors.emailAddress)}
@@ -62,7 +60,6 @@ const EntrantForm = ({ formData, setFormData }) => {
               type="email"
               placeholder='Votre mail'
               value={formData.values.emailAddress}
-              sx={{ mt:1}}
             />
             <TextField
               error={!!(formData.touched.phoneNumber && formData.errors.phoneNumber)}
@@ -74,17 +71,16 @@ const EntrantForm = ({ formData, setFormData }) => {
               onChange={formData.handleChange}
               type="tel"
               placeholder='Votre numero de telephone'
-              value={formData.values.phoneNumber} 
-              sx={{ mt:1}}
+              value={formData.values.phoneNumber}
             />
           </Grid>
           <Grid item 
               xs={6} 
               sx={{ display:"flex", flexDirection:"column", gap:1}}>
               <TextField
-                // error={!!(formData.touched.phoneNumber && formData.errors.phoneNumber)}
+                error={!!(formData.touched.birthDate && formData.errors.birthDate)}
                 fullWidth
-                // helperText={formData.touched.phoneNumber && formData.errors.phoneNumber}
+                helperText={formData.touched.birthDate && formData.errors.birthDate}
                 id="outlined-number"
                 label="Date de Naissance"
                 name="birthDate"
@@ -92,29 +88,30 @@ const EntrantForm = ({ formData, setFormData }) => {
                 onChange={formData.handleChange}
                 type="Date"
                 value={formData.values.birthDate}
-                sx={{ mt:1}}
                 InputLabelProps={{
                   shrink: true,
                 }}
               />
-            <FormControl sx={{ width:'100%', }}>
-              <InputLabel id="select-gender">Genre</InputLabel>
-              <Select
-                  labelId="select-gender"
-                  id="select-gender"
-                  value={formData.values.gender}
-                  onChange={formData.handleChange}                        
-                  label="Genre"
-                  name='gender'
-                >                        
-                    <MenuItem  value={'MALE'}>
-                        Homme
-                    </MenuItem>
-                    <MenuItem  value={'FEMELE'}>
-                        Femme
-                    </MenuItem>
-              </Select>
-            </FormControl>
+              
+            <TextField
+                labelId="select-gender"
+                id="select-gender"
+                select
+                value={formData.values.gender}
+                onChange={formData.handleChange}                        
+                label="Genre"
+                name='gender'
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              >                        
+                  <MenuItem  value={'male'}>
+                      Homme
+                  </MenuItem>
+                  <MenuItem  value={'femele'}>
+                      Femme
+                  </MenuItem>
+            </TextField>
             <TextField
               error={!!(formData.touched.countryOfResidence && formData.errors.countryOfResidence)}
               fullWidth
@@ -123,12 +120,49 @@ const EntrantForm = ({ formData, setFormData }) => {
               name="countryOfResidence"
               onBlur={formData.handleBlur}
               onChange={formData.handleChange}
-              type="tel"
+              type="text"
               placeholder='ex: RDC'
               value={formData.values.countryOfResidence} 
               
             />
             <TextField
+                labelId="select-state_marital"
+                id="select-state_marital"
+                select
+                value={formData.values.maritalStatus}
+                onChange={formData.handleChange}                        
+                label="Statut Social"
+                name='maritalStatus'
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              >                        
+                  <MenuItem  value={'single'}>
+                      Celibataire
+                  </MenuItem>
+                  <MenuItem  value={'married'}>
+                      Marie(e)
+                  </MenuItem>
+            </TextField>
+            {formData.values.maritalStatus === "married" &&          
+              <TextField
+                error={!!(formData.touched.numberOfChildren && formData.errors.numberOfChildren)}
+                fullWidth
+                helperText={formData.touched.numberOfChildren && formData.errors.numberOfChildren}
+                label="Nombre d'enfants"
+                name="numberOfChildren"
+                onBlur={formData.handleBlur}
+                onChange={formData.handleChange}
+                type="number"
+                min={0}
+                defaultValue={0}
+                placeholder="Nombre d'enfants"
+                value={formData.values.numberOfChildren}
+                sx={{ mt:1}}
+              />
+            }
+            {formData.values.maritalStatus !== "married" &&
+              <TextField
               error={!!(formData.touched.educationLevel && formData.errors.educationLevel)}
               fullWidth
               helperText={formData.touched.educationLevel && formData.errors.educationLevel}
@@ -136,29 +170,12 @@ const EntrantForm = ({ formData, setFormData }) => {
               name="educationLevel"
               onBlur={formData.handleBlur}
               onChange={formData.handleChange}
-              type="tel"
-              placeholder='ex: RDC'
+              type="text"
+              placeholder='BAC+5'
               value={formData.values.educationLevel} 
               
-            />            
-            <FormControl sx={{ width:'100%', }}>
-              <InputLabel id="select-state_marital">Statut Social</InputLabel>
-              <Select
-                  labelId="select-state_marital"
-                  id="select-state_marital"
-                  value={formData.values.maritalStatus}
-                  onChange={formData.handleChange}                        
-                  label="Statut Social"
-                  name='maritalStatus'
-                >                        
-                    <MenuItem  value={'celibataire'}>
-                        Celibataire
-                    </MenuItem>
-                    <MenuItem  value={'couple'}>
-                        Marie(e)
-                    </MenuItem>
-              </Select>
-            </FormControl>
+            />
+            }  
           </Grid>
         </Grid>
       </Stack>
