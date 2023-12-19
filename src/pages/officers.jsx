@@ -13,7 +13,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import CompanyStore from 'src/store/company.store';
 import FetchingData from 'src/utils/fetch-data';
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
   useQuery,
@@ -227,9 +227,9 @@ const Page = () => {
   useEffect(()=>{    
     setIsLoadingData(true);
     async function fetchData() {      
-      const response = await FetchingData('agent','GET');
+      const response = await FetchingData('agents','GET');
       if(response.status === 200) {
-        setAgents(response.data);
+        setAgents(response.data.content);
         setIsLoadingData(false);
       }
     }
@@ -278,19 +278,28 @@ const Page = () => {
         .required('Le choix du cybercafe est obligatoire'),
     }),
     onSubmit: async (values, helpers) => {
+      // console.log(values);
+      // return null;
       try {
         const objectData = JSON.stringify({
-          firstName : values.first_name,
-          middleName : values.middle_name,
-          lastName : values.last_name,
-          agentPhoneNumber: values.agent_phone_number,
-          // dvBusiness: values.dv_business_id,
+          "firstName" : values.first_name,
+          "middleName" : values.middle_name,
+          "lastName" : values.last_name,
+          "agentPhoneNumber": values.agent_phone_number,
+          // dv_business_dv_business_id: values.dv_business_id,
           // user_id: localStorage.getItem('user_id'),
-          agentEmail: values.agent_email,
+          "agentEmail": values.agent_email,
+          "dvBusinessDTO": {
+            "dvBusinessId" : values.dv_business_id,
+          },
+          "userDTO": {
+            "email" : values.agent_email, 
+            "password" : '1234',
+          },
         });
         setIsSubmitingLoading(true);
 
-        const response = await FetchingData('agent','POST', objectData );
+        const response = await FetchingData('agents','POST', objectData );
         if(response.status === 200 || response.status === 201) {
           toast.success('Enregistrement effectue avec success');
 
@@ -298,7 +307,7 @@ const Page = () => {
             setOpen(false);
             setIsSubmitingLoading(false);
             setIsLoadingData(true);
-          }, 2000);        
+          }, 3000);        
         }else{
           toast.error('Une erreur s\'est produite, veuillez reéssayer plus tard');
           setIsSubmitingLoading(false);
@@ -339,6 +348,19 @@ const Page = () => {
           Officers | DV USA LOTTERY
         </title>
       </Head>
+      <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
+      <ToastContainer />
       <QueryClientProvider client={queryClient}>
         <Box
           component="main"

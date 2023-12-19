@@ -15,13 +15,15 @@ import {
 } from '@mui/material';
 import { Logo } from 'src/components/logo';
 import { Scrollbar } from 'src/components/scrollbar';
-import { items } from './config';
+import { items, itemsManager , itemsAgent, itemsCustomer } from './config';
 import { SideNavItem } from './side-nav-item';
 
 export const SideNav = (props) => {
   const { open, onClose } = props;
   const pathname = usePathname();
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'));
+
+  const itemsMenu = sessionStorage.getItem('userRoles') == "Admin" ? items : sessionStorage.getItem('userRoles') == "Manager" ? itemsManager : sessionStorage.getItem('userRoles') == "Agent" ? itemsAgent : itemsCustomer;
 
   const content = (
     <Scrollbar
@@ -106,7 +108,7 @@ export const SideNav = (props) => {
               m: 0
             }}
           >
-            {items.map((item) => {
+            {itemsMenu.map((item) => {
               const active = item.path ? (pathname === item.path) : false;
 
               return (

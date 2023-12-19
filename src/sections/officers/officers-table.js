@@ -107,10 +107,10 @@ export const OfficersTable = (props) => {
                       {agent.agentPhoneNumber}
                     </TableCell>
                     <TableCell>
-                      {agent.dvBusiness}
+                      {agent.dvBusinessDTO}
                     </TableCell>
                     <TableCell>
-                      {agent.user}
+                      {agent.agentId}
                     </TableCell>
                     <TableCell>
                       <Stack

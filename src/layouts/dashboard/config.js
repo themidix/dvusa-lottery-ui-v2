@@ -92,3 +92,120 @@ export const items = [
   //   )
   // }
 ];
+
+export const itemsManager = [
+  {
+    title: 'Accueil',
+    path: '/',
+    icon: (
+      <SvgIcon fontSize="small">
+        <ChartBarIcon />
+      </SvgIcon>
+    )
+  },
+  {
+    title: 'Clients',
+    path: '/customers',
+    icon: (
+      <SvgIcon fontSize="small">
+        <UserGroupIcon />
+      </SvgIcon>
+    )
+  },
+  {
+    title: 'Cybercafe',
+    path: '/companies',
+    icon: (
+      <SvgIcon fontSize="small">
+        <ShoppingBagIcon />
+      </SvgIcon>
+    )
+  },
+  {
+    title: 'Agents',
+    path: '/officers',
+    icon: (
+      <SvgIcon fontSize="small">
+        <UsersIcon />
+      </SvgIcon>
+    )
+  },
+  {
+    title: 'Compte',
+    path: '/account',
+    icon: (
+      <SvgIcon fontSize="small">
+        <UserIcon />
+      </SvgIcon>
+    )
+  },
+];
+
+export const itemsAgent = [
+  {
+    title: 'Accueil',
+    path: '/',
+    icon: (
+      <SvgIcon fontSize="small">
+        <ChartBarIcon />
+      </SvgIcon>
+    )
+  },
+  {
+    title: 'Clients',
+    path: '/customers',
+    icon: (
+      <SvgIcon fontSize="small">
+        <UserGroupIcon />
+      </SvgIcon>
+    )
+  },
+  {
+    title: 'Compte',
+    path: '/account',
+    icon: (
+      <SvgIcon fontSize="small">
+        <UserIcon />
+      </SvgIcon>
+    )
+  },
+  {
+    title: 'Connexion',
+    path: '/auth/login',
+    icon: (
+      <SvgIcon fontSize="small">
+        <LockClosedIcon />
+      </SvgIcon>
+    )
+  },
+];
+
+export const itemsCustomer = [
+  {
+    title: 'Accueil',
+    path: '/',
+    icon: (
+      <SvgIcon fontSize="small">
+        <ChartBarIcon />
+      </SvgIcon>
+    )
+  },
+  {
+    title: 'Compte',
+    path: '/account',
+    icon: (
+      <SvgIcon fontSize="small">
+        <UserIcon />
+      </SvgIcon>
+    )
+  },
+  {
+    title: 'Connexion',
+    path: '/auth/login',
+    icon: (
+      <SvgIcon fontSize="small">
+        <LockClosedIcon />
+      </SvgIcon>
+    )
+  },
+];

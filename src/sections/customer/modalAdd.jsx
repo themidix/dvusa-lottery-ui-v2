@@ -17,6 +17,8 @@ export default function FormAddCustomer() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setIsOpenModalAdd(false);
+  const [dataEntrant, setDataEntrant] = useState({});
+
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -164,10 +166,12 @@ export default function FormAddCustomer() {
       educationLevel: Yup
         .string()
         .max(45)
-        .min(2, 'Il faut saisir au moins 2 caracteres')
-        .required('Le niveau scolaire est obligatoire'),
+        .min(2, 'Il faut saisir au moins 2 caracteres'),
+        // .required('Le niveau scolaire est obligatoire'),
     }),
     onSubmit: async (values, helpers) => {
+      console.log("Submit in parent");
+      return null;
       try {
         const objectData = JSON.stringify({
           firstName : values.firstName,
@@ -199,13 +203,9 @@ export default function FormAddCustomer() {
   });
   
   const [activeStep, setActiveStep] = React.useState(0);
-  const [skipped, setSkipped] = React.useState(new Set());
 
   const handleNext = () => {
-    let newSkipped = skipped;
-
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    setSkipped(newSkipped);
   };
 
   const handleBack = () => {
@@ -219,13 +219,20 @@ export default function FormAddCustomer() {
   const getStepContent = (step) => {
     switch (step) {
       case 0:
-        return <EntrantForm formData={formik}/>;
+        return <EntrantForm formData={formik} 
+        setDataEntrant={setDataEntrant}
+        dataEntrant={dataEntrant}
+        handleNext={handleNext} />;
       case 1:
-        return <EntrantMoreInfoForm formData={formik} />;
+        return <EntrantMoreInfoForm formData={formik} 
+        handleNext={handleNext} 
+        setDataEntrant={setDataEntrant}
+        dataEntrant={dataEntrant}
+        handleBack={handleBack} />;
       case 2:
         return <EntrantForm formData={formik} />;
       default:
-        return 'Étape inconnue';
+        return <EntrantForm formData={formik}/>;
     }
   };
 
@@ -251,10 +258,11 @@ export default function FormAddCustomer() {
                     );
                     })}
                 </Stepper>
+
                 {activeStep === steps.length ? (
                     <React.Fragment>
                         <Typography sx={{ mt: 2, mb: 1 }}>
-                            All steps completed - you&apos;re finished
+                            Resumer - you&apos;re finished
                         </Typography>
                         <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
                             <Box sx={{ flex: '1 1 auto' }} />
@@ -265,7 +273,7 @@ export default function FormAddCustomer() {
                     <React.Fragment>
                         <Box sx={{ display: 'flex', flexDirection: 'column', pt: 2 }}>
                             {getStepContent(activeStep)}
-                            <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                            {/* <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
                                 <Button
                                 color="inherit"
                                 disabled={activeStep === 0}
@@ -278,7 +286,7 @@ export default function FormAddCustomer() {
                                 <Button onClick={handleNext}>
                                     {activeStep === steps.length - 1 ? 'Terminer' : 'Suivant'}
                                 </Button>
-                            </Box>
+                            </Box> */}
                         </Box>
                     </React.Fragment>
                 )}
