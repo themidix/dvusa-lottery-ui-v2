@@ -47,6 +47,15 @@ export const items = [
     )
   },
   {
+    title: 'Utilisateurs',
+    path: '/users',
+    icon: (
+      <SvgIcon fontSize="small">
+        <UsersIcon />
+      </SvgIcon>
+    )
+  },
+  {
     title: 'Compte',
     path: '/account',
     icon: (

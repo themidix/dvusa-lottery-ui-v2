@@ -227,17 +227,17 @@ const Page = () => {
   const { companies, setCompanies } = CompanyStore();
   const { agents, setAgents } = AgentStore();
   
-  useEffect(()=>{    
-    setIsLoadingBusinesse(true);
-    async function fetchData() {      
-      const response = await FetchingData('dvBusinesses','GET');
-      if(response.status === 200) {
-        setCompanies(response.data);
-        setIsLoadingBusinesse(false);
-      }
-    }
-    fetchData();
-  }, [setCompanies , setIsLoadingBusinesse]);
+//   useEffect(()=>{    
+//     setIsLoadingBusinesse(true);
+//     async function fetchData() {      
+//       const response = await FetchingData('dvBusinesses','GET');
+//       if(response.status === 200) {
+//         setCompanies(response.data);
+//         setIsLoadingBusinesse(false);
+//       }
+//     }
+//     fetchData();
+//   }, [setCompanies , setIsLoadingBusinesse]);
 
   useEffect(()=>{    
     setIsLoadingData(true);
@@ -352,7 +352,7 @@ const Page = () => {
     setOpen(true);
   };
 
-  const handleClose = () => {
+  const handleClose = () =>     {
     setOpen(false);
   };
 
@@ -360,7 +360,7 @@ const Page = () => {
     <>
       <Head>
         <title>
-          Officers | DV USA LOTTERY
+          Users | DV USA LOTTERY
         </title>
       </Head>
       <ToastContainer
@@ -393,7 +393,7 @@ const Page = () => {
               >
                 <Stack spacing={1}>
                   <Typography variant="h4">
-                    Agents
+                    Utilisateurs
                   </Typography>
                   <Stack
                     alignItems="center"
@@ -432,7 +432,7 @@ const Page = () => {
                     variant="contained"
                     onClick={handleClickOpen}
                   >
-                    Ajouter un agent
+                    Ajouter un utilisateur
                   </Button>
                 </div>
               </Stack>
@@ -467,12 +467,13 @@ const Page = () => {
                   rowsPerPage={rowsPerPage}
                   selected={customersSelection.selected}
                 />
+
                 <Dialog open={open}
                 fullWidth={true} 
                 maxWidth={'md'}
                 onClose={handleClose} 
                 >
-                  <DialogTitle sx={{ backgroundColor: '#1C2536', color:'white'}}>Créer un agent</DialogTitle>
+                  <DialogTitle sx={{ backgroundColor: '#1C2536', color:'white'}}>Créer un utilisateur</DialogTitle>
                   <DialogContent>
                     <form
                         noValidate
@@ -543,7 +544,7 @@ const Page = () => {
                             placeholder='Votre numero de telephone'
                             value={formik.values.agent_phone_number}
                           />
-                          <FormControl x={{ m: 1, minWidth: 120 }}>
+                          {/* <FormControl x={{ m: 1, minWidth: 120 }}>
                             <InputLabel id="select-cybercafe">Cybercafe</InputLabel>
                             {isLoadingBusinesse ? " Chargement......"
                               :
@@ -565,6 +566,26 @@ const Page = () => {
                                 })}
                               </Select>
                             }
+                          </FormControl> */}
+                          <FormControl x={{ m: 1, minWidth: 120 }}>
+                            <InputLabel id="select-cybercafe">Role</InputLabel>
+                            <Select
+                                labelId="select-cybercafe"
+                                id="demo-simple-select-standard"
+                                value={formik.values.dv_business_id}
+                                onChange={formik.handleChange}                        
+                                label="Cybercafe"
+                                name='dv_business_id'
+                              >                        
+                                {userRoles.map( (role, index) => {
+                                  return (
+                                    <MenuItem  value={role.id} 
+                                      key={index}>
+                                      {role.roleName}
+                                    </MenuItem>
+                                  )
+                                })}
+                            </Select>
                           </FormControl>
                         </Stack>
                         {formik.errors.submit && (
